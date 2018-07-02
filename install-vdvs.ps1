@@ -100,6 +100,7 @@ if ($svc) {
 
 # Download the vdvs binary
 echo "Downloading from $uri..."
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 Invoke-WebRequest $uri -OutFile $zipFileName
 if (! $?) {
     echo "Failed to download from $uri."
