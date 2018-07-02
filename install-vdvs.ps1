@@ -100,7 +100,21 @@ if ($svc) {
 
 # Download the vdvs binary
 echo "Downloading from $uri..."
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+#[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
+$security_protcols = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::SystemDefault
+
+if ([Net.SecurityProtocolType].GetMember("Tls11").Count -gt 0) {
+    $security_protcols = $security_protcols -bor [Net.SecurityProtocolType]::Tls11
+}
+
+if ([Net.SecurityProtocolType].GetMember("Tls12").Count -gt 0) {
+     $security_protcols = $security_protcols -bor [Net.SecurityProtocolType]::Tls12
+ }
+
+[Net.ServicePointManager]::SecurityProtocol = $security_protcols
+
+
 Invoke-WebRequest $uri -OutFile $zipFileName
 if (! $?) {
     echo "Failed to download from $uri."
